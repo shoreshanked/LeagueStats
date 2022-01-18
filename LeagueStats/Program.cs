@@ -26,6 +26,9 @@ namespace LeagueStats
     {
         static void Main(string[] args)
         {
+
+            string filePath = "C:\\Users\\Willi\\OneDrive\\Desktop\\Code Repository\\LeagueStats\\LeagueStats\\SaveState\\test.txt";
+
             var summonerList = new List<string>();
             var summonerPuuidList = new List<string>();
             var matchIdList = new List<string>();
@@ -34,7 +37,7 @@ namespace LeagueStats
 
             var client = new RestClient("https://euw1.api.riotgames.com");
             var clientRegion = new RestClient("https://europe.api.riotgames.com");
-            var apiToken = "RGAPI-8bf1c90f-0b35-41d0-aef5-746d1f5b3abb";
+            var apiToken = "RGAPI-0872b866-35f8-4c14-b148-6d0cd2c09d51";
             var userSpecified = false;
 
             do
@@ -74,8 +77,10 @@ namespace LeagueStats
             
             if(matchDataList.Count > 0)
             {
-
+                Jobs.WriteToJsonFile<MatchDataModel>(filePath, matchDataList, false);
             }
+
+            var test = Jobs.ReadFromJsonFile<MatchDataModel>(filePath);
 
             var winCount = 0;
 

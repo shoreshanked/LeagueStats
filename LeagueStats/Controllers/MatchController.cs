@@ -24,11 +24,11 @@ namespace LeagueStats
 
         static public void getMatchData(IDictionary<string, List<string>> matchIdDictionary, string apiToken, RestClient clientRegion, List<MatchDataModel> matchDataList)
         {
-            foreach (var item in matchIdDictionary)
+            foreach (var puuid in matchIdDictionary)
             {
-                foreach (var item2 in item.Value)
+                foreach (var matchID in puuid.Value)
                 {
-                    var getMatchDataViaMatchID = new RestRequest("https://europe.api.riotgames.com/lol/match/v5/matches/" + item2, Method.Get);
+                    var getMatchDataViaMatchID = new RestRequest("https://europe.api.riotgames.com/lol/match/v5/matches/" + matchID, Method.Get);
                     getMatchDataViaMatchID.AddHeader("X-Riot-Token", apiToken);
 
                     var matchdata = clientRegion.ExecuteGetAsync(getMatchDataViaMatchID).Result;

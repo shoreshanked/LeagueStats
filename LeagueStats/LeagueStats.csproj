@@ -77,18 +77,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Methods\Jobs.cs" />
     <Compile Include="Controllers\MatchController.cs" />
     <Compile Include="Models\MatchDataModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\SummonerModel.cs" />
     <Compile Include="Controllers\SummonerController.cs" />
-    <Compile Include="Calc\TimeConversion.cs" />
+    <Compile Include="Methods\TimeConversion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="SaveState\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
