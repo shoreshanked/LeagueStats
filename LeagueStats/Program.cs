@@ -50,7 +50,7 @@ namespace LeagueStats
             var apiToken = "RGAPI-0872b866-35f8-4c14-b148-6d0cd2c09d51";
             var userSpecified = false;
 
-            //Methods check whether saved data exists. Returns Null is data file is empty
+            //check whether saved data exists. Returns Null is data file is empty
             var getSaveData = LoadData(summonerPuuidList, summonerList, matchDataList, filePath);
 
             //If saved data methods are not null and user wants to reload, then reload
@@ -73,13 +73,15 @@ namespace LeagueStats
             {
                 do
                 {
+                    //Console.WriteLine("\nEnter Summoner name");
+                    //var summonerName = Console.ReadLine();
 
-                    Console.WriteLine("\nEnter Summoner name");
-                    var summonerName = Console.ReadLine();
+                    summonerList.AddMany("ChardeeMacDennis");
 
-                    if (!string.IsNullOrEmpty(summonerName))
+                    //if (!string.IsNullOrEmpty(summonerName))
+                    if(summonerList.Count > 0)
                     {
-                        summonerList.AddMany(summonerName);
+                        //summonerList.AddMany(summonerName);
                         var response = SummonerController.getSummonerPuuid(summonerList, apiToken, client);
 
                         if (!string.IsNullOrEmpty(response.puuid))
@@ -107,8 +109,11 @@ namespace LeagueStats
                 {
                     MatchController.getMatchData(matchIdDictionary, apiToken, clientRegion, matchDataList);
                 }
-
-                SaveData(filePath, summonerList, summonerPuuidList, matchDataList);
+                //only save to file if there is actual data to save
+                if (summonerList.Count > 0 && summonerPuuidList.Count > 0 && matchDataList.Count > 0)
+                {
+                    SaveData(filePath, summonerList, summonerPuuidList, matchDataList);
+                }
             }
 
             

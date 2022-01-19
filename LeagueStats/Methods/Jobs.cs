@@ -1,20 +1,21 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 
 namespace LeagueStats
 {
     class Jobs
     {
-        public static void saveMatchData<MatchDataModel>(string savePath, List<MatchDataModel> mDataList, bool append = false) where MatchDataModel : new()
+        async public static void saveMatchData<MatchDataModel>(string savePath, List<MatchDataModel> mDataList, bool append = false) where MatchDataModel : new()
         {
             TextWriter writer = null;
             try
             {
                 var contentsToWriteToFile = JsonConvert.SerializeObject(mDataList);
                 writer = new StreamWriter(savePath + "\\matches.txt", append);
-                writer.Write(contentsToWriteToFile);
+                await writer.WriteAsync(contentsToWriteToFile);
             }
             finally
             {
@@ -23,35 +24,35 @@ namespace LeagueStats
             }
         }
 
-        public static void saveSummonerData<List>(string savePath, List<string> summonerList, bool append = false) where List : new()
+        async public static void saveSummonerData<List>(string savePath, List<string> summonerList, bool append = false) where List : new()
         {
             TextWriter writer = null;
             try
             {
                 var contentsToWriteToFile = JsonConvert.SerializeObject(summonerList);
                 writer = new StreamWriter(savePath + "\\summoner.txt", append);
-                writer.Write(contentsToWriteToFile);
+                await writer.WriteAsync(contentsToWriteToFile);
             }
             finally
             {
                 if (writer != null)
-                    writer.Close();
+                writer.Close();
             }
         }
 
-        public static void saveSummonerPuuidData<List>(string savePath, List<string> summonersPuuid, bool append = false) where List : new()
+        async public static void saveSummonerPuuidData<List>(string savePath, List<string> summonersPuuid, bool append = false) where List : new()
         {
             TextWriter writer = null;
             try
             {
                 var contentsToWriteToFile = JsonConvert.SerializeObject(summonersPuuid);
                 writer = new StreamWriter(savePath + "\\summonersPuuid.txt", append);
-                writer.Write(contentsToWriteToFile);
+                await writer.WriteAsync(contentsToWriteToFile);
             }
             finally
             {
                 if (writer != null)
-                    writer.Close();
+                writer.Close();
             }
         }
 
@@ -64,7 +65,7 @@ namespace LeagueStats
                 {
                     reader = new StreamReader(filePath + "\\matches.txt");
                     var fileContents = reader.ReadToEnd();
-                    return JsonConvert.DeserializeObject<List<MatchDataModel>>(fileContents);
+                    return JsonConvert.DeserializeObject<List<MatchDataModel>>(fileContents.ToString());
                 }
                 catch
                 {
@@ -88,7 +89,7 @@ namespace LeagueStats
                 {
                     reader = new StreamReader(filePath + "\\summoner.txt");
                     var fileContents = reader.ReadToEnd();
-                    return JsonConvert.DeserializeObject<List<string>>(fileContents);
+                    return JsonConvert.DeserializeObject<List<string>>(fileContents.ToString());
                 }
                 catch
                 {
@@ -112,7 +113,7 @@ namespace LeagueStats
                 {
                     reader = new StreamReader(filePath + "\\summonersPuuid.txt");
                     var fileContents = reader.ReadToEnd();
-                    return JsonConvert.DeserializeObject<List<string>>(fileContents);
+                    return JsonConvert.DeserializeObject<List<string>>(fileContents.ToString());
                 }
                 catch
                 {
