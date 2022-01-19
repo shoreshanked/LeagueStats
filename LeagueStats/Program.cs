@@ -51,25 +51,25 @@ namespace LeagueStats
             var userSpecified = false;
 
             //Methods check whether saved data exists. Returns Null is data file is empty
-            var savedData = LoadData(summonerPuuidList, summonerList, matchDataList, filePath);
+            var getSaveData = LoadData(summonerPuuidList, summonerList, matchDataList, filePath);
 
             //If saved data methods are not null and user wants to reload, then reload
             var input = "";
-            if (savedData.matchesSave != null && savedData.summonerPuuidSave != null && savedData.summonerSave != null)
+            if (getSaveData.matchesSave != null && getSaveData.summonerPuuidSave != null && getSaveData.summonerSave != null)
             {
                 Console.WriteLine("Would you like to Load the previous summoner data? \nPress Y to load data");
                 input = Console.ReadLine();
 
                 if(input.ToLower() == "y")
                 {
-                    matchDataList = savedData.matchesSave;
-                    summonerList = savedData.summonerSave;
-                    summonerPuuidList = savedData.summonerPuuidSave;
+                    matchDataList = getSaveData.matchesSave;
+                    summonerList = getSaveData.summonerSave;
+                    summonerPuuidList = getSaveData.summonerPuuidSave;
                 }
 
             }
 
-            if (savedData.matchesSave is null || input.ToLower() != "y")
+            if (getSaveData.matchesSave is null || input.ToLower() != "y")
             {
                 do
                 {
