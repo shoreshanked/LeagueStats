@@ -70,7 +70,7 @@ namespace LeagueStats
         public partial class Participant
         {
             [JsonProperty("assists")]
-            public long Assists { get; set; }
+            public int Assists { get; set; }
 
             [JsonProperty("baronKills")]
             public long BaronKills { get; set; }
@@ -109,7 +109,7 @@ namespace LeagueStats
             public long DamageSelfMitigated { get; set; }
 
             [JsonProperty("deaths")]
-            public long Deaths { get; set; }
+            public int Deaths { get; set; }
 
             [JsonProperty("detectorWardsPlaced")]
             public long DetectorWardsPlaced { get; set; }
@@ -139,10 +139,10 @@ namespace LeagueStats
             public bool GameEndedInSurrender { get; set; }
 
             [JsonProperty("goldEarned")]
-            public long GoldEarned { get; set; }
+            public int GoldEarned { get; set; }
 
             [JsonProperty("goldSpent")]
-            public long GoldSpent { get; set; }
+            public int GoldSpent { get; set; }
 
             [JsonProperty("individualPosition")]
             public IndividualPosition IndividualPosition { get; set; }
@@ -184,7 +184,7 @@ namespace LeagueStats
             public long KillingSprees { get; set; }
 
             [JsonProperty("kills")]
-            public long Kills { get; set; }
+            public int Kills { get; set; }
 
             [JsonProperty("lane")]
             public String Lane { get; set; }
@@ -331,7 +331,7 @@ namespace LeagueStats
             public long TotalHeal { get; set; }
 
             [JsonProperty("totalHealsOnTeammates")]
-            public long TotalHealsOnTeammates { get; set; }
+            public int TotalHealsOnTeammates { get; set; }
 
             [JsonProperty("totalMinionsKilled")]
             public long TotalMinionsKilled { get; set; }

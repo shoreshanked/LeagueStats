@@ -8,14 +8,14 @@ namespace LeagueStats
 {
     class Jobs
     {
-        async public static void saveMatchData<MatchDataModel>(string savePath, List<MatchDataModel> mDataList, bool append = false) where MatchDataModel : new()
+        public static void saveMatchData<MatchDataModel>(string savePath, List<MatchDataModel> mDataList, bool append = false) where MatchDataModel : new()
         {
             TextWriter writer = null;
             try
             {
                 var contentsToWriteToFile = JsonConvert.SerializeObject(mDataList);
                 writer = new StreamWriter(savePath + "\\matches.txt", append);
-                await writer.WriteAsync(contentsToWriteToFile);
+                writer.Write(contentsToWriteToFile);
             }
             finally
             {
@@ -24,14 +24,14 @@ namespace LeagueStats
             }
         }
 
-        async public static void saveSummonerData<List>(string savePath, List<string> summonerList, bool append = false) where List : new()
+        public static void saveSummonerData<List>(string savePath, List<string> summonerList, bool append = false) where List : new()
         {
             TextWriter writer = null;
             try
             {
                 var contentsToWriteToFile = JsonConvert.SerializeObject(summonerList);
                 writer = new StreamWriter(savePath + "\\summoner.txt", append);
-                await writer.WriteAsync(contentsToWriteToFile);
+                writer.Write(contentsToWriteToFile);
             }
             finally
             {
@@ -40,14 +40,14 @@ namespace LeagueStats
             }
         }
 
-        async public static void saveSummonerPuuidData<List>(string savePath, List<string> summonersPuuid, bool append = false) where List : new()
+        public static void saveSummonerPuuidData<List>(string savePath, List<string> summonersPuuid, bool append = false) where List : new()
         {
             TextWriter writer = null;
             try
             {
                 var contentsToWriteToFile = JsonConvert.SerializeObject(summonersPuuid);
                 writer = new StreamWriter(savePath + "\\summonersPuuid.txt", append);
-                await writer.WriteAsync(contentsToWriteToFile);
+                writer.Write(contentsToWriteToFile);
             }
             finally
             {

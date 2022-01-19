@@ -116,24 +116,9 @@ namespace LeagueStats
                 }
             }
 
-            
-            var winCount = 0;
+            Console.WriteLine("Wins in last 10 games: " + Calculations.winsInLast10Games(matchDataList, summonerPuuidList));
 
-            foreach(var match in matchDataList)
-            {
-                if(match.Metadata != null)
-                {
-                    var gameDuration = TimeConversion.SecondsToMinutes(match.Info.GameDuration);
-
-                    Console.WriteLine("gameDuration: " + gameDuration);
-
-                    foreach (var participant in match.Info.Participants)
-                    {
-                        
-                    }
-                }  
-            }
-            Console.WriteLine("Wins in last 10 Games: " + winCount);
+            Calculations.calculateOverviewStats(matchDataList, summonerPuuidList);
 
             Console.ReadKey();
         }
