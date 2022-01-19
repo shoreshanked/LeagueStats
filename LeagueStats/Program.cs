@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using RestSharp;
 
 
@@ -16,10 +17,26 @@ namespace LeagueStats
 
     class Program
     {
+
+        public static void SaveData(string filePath, List<string> summoners, List<string> summonersPuuid, List<MatchDataModel> matches )
+        {
+            Jobs.saveSummonerData<List<string>>(filePath, summoners, false);
+            Jobs.saveSummonerPuuidData<List<string>>(filePath, summonersPuuid, false);
+            Jobs.saveMatchData<MatchDataModel>(filePath, matches, false);
+        }
+
+        public static (List<string> summonerPuuidSave, List<string> summonerSave, List<MatchDataModel> matchesSave) LoadData(List<string> summonerPuuid, List<string> summoner, List<MatchDataModel> matches, string filePath)
+        {
+            matches = Jobs.loadMatchData<MatchDataModel>(filePath);
+            summoner = Jobs.loadSummonerData<List<string>>(filePath);
+            summonerPuuid = Jobs.loadSummonerPuuidData<List<string>>(filePath);
+
+            return(summonerPuuid, summoner, matches);
+        }
+
         static void Main(string[] args)
         {
-
-            string filePath = "C:\\Users\\Willi\\OneDrive\\Desktop\\Code Repository\\LeagueStats\\LeagueStats\\SaveState";
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"SaveState");
 
             var summonerList = new List<string>();
             var summonerPuuidList = new List<string>();
@@ -27,29 +44,32 @@ namespace LeagueStats
             var matchDataList = new List<MatchDataModel>();
             IDictionary<string, List<string>> matchIdDictionary = new Dictionary<string, List<string>>();
 
+            //API variables
             var client = new RestClient("https://euw1.api.riotgames.com");
             var clientRegion = new RestClient("https://europe.api.riotgames.com");
             var apiToken = "RGAPI-0872b866-35f8-4c14-b148-6d0cd2c09d51";
             var userSpecified = false;
 
-            var savedDataJson = Jobs.loadMatchData<MatchDataModel>(filePath);
-            var savedSummonerDataJson = Jobs.loadSummonerData<List<string>>(filePath);
+            //Methods check whether saved data exists. Returns Null is data file is empty
+            var savedData = LoadData(summonerPuuidList, summonerList, matchDataList, filePath);
 
+            //If saved data methods are not null and user wants to reload, then reload
             var input = "";
-            if (savedDataJson != null)
+            if (savedData.matchesSave != null && savedData.summonerPuuidSave != null && savedData.summonerSave != null)
             {
                 Console.WriteLine("Would you like to Load the previous summoner data? \nPress Y to load data");
                 input = Console.ReadLine();
 
                 if(input.ToLower() == "y")
                 {
-                    matchDataList = savedDataJson;
-                    summonerList = savedSummonerDataJson;
+                    matchDataList = savedData.matchesSave;
+                    summonerList = savedData.summonerSave;
+                    summonerPuuidList = savedData.summonerPuuidSave;
                 }
 
             }
 
-            if (savedDataJson is null || input.ToLower() != "y")
+            if (savedData.matchesSave is null || input.ToLower() != "y")
             {
                 do
                 {
@@ -60,8 +80,6 @@ namespace LeagueStats
                     if (!string.IsNullOrEmpty(summonerName))
                     {
                         summonerList.AddMany(summonerName);
-                        Jobs.saveSummonerData<List<string>>(filePath, summonerList, false);
-
                         var response = SummonerController.getSummonerPuuid(summonerList, apiToken, client);
 
                         if (!string.IsNullOrEmpty(response.puuid))
@@ -90,11 +108,7 @@ namespace LeagueStats
                     MatchController.getMatchData(matchIdDictionary, apiToken, clientRegion, matchDataList);
                 }
 
-                if (matchDataList.Count > 0)
-                {
-                    Jobs.saveMatchData<MatchDataModel>(filePath, matchDataList, false);
-                }
-
+                SaveData(filePath, summonerList, summonerPuuidList, matchDataList);
             }
 
             
@@ -110,10 +124,7 @@ namespace LeagueStats
 
                     foreach (var participant in match.Info.Participants)
                     {
-                        if (participant.Puuid == summonerPuuidList[0])
-                        {
-                           // participant.
-                        }
+                        
                     }
                 }  
             }
