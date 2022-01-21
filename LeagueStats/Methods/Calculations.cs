@@ -83,11 +83,6 @@ namespace LeagueStats
 
             }
 
-            foreach(var game in myTeamList)
-            {
-                Console.WriteLine("Total Deaths: {0}\nTotal Assists: {1}\nTotal Kills: {2}\n", game.totalDeaths, game.totalAssists, game.totalKills);
-
-            }
             return null;
         }
 
