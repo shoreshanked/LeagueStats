@@ -29,8 +29,6 @@ namespace LeagueStats
         public static List<MatchOverviewModel> calculateOverviewStats(List<MatchDataModel> matchdata, List<string> summonerPuuidList)
         {
             List<MatchOverviewModel> masterGameList = new List<MatchOverviewModel>();
-            List<MatchOverviewModel> myTeamList = new List<MatchOverviewModel>();
-            List<MatchOverviewModel> opponentTeamList = new List<MatchOverviewModel>();
 
             foreach (var match in matchdata)
             {
@@ -44,11 +42,13 @@ namespace LeagueStats
                     //var gameDuration = TimeConversion.SecondsToMinutes(match.Info.GameDuration);
                     //Console.WriteLine("gameDuration: " + gameDuration);
 
+                    // sort the 10 unordered participants into two teams
                     foreach (var participant in match.Info.Participants)
                     {
                         sortTeams(participant, team1, team2);
                     }
 
+                    //calculate stats for team 1. save to a MatchOverviewModel which holds team level information
                     team1Overview.teamID = teamCheck(team1);
                     team1Overview.matchID = match.Metadata.MatchId;
                     team1Overview.totalKills = calculateTotalTeamKills(team1);
@@ -60,6 +60,7 @@ namespace LeagueStats
                     team1Overview.winGame = winCheck(team1);
                     team1Overview.myTeam = summonerCheck(team1, summonerPuuidList);
 
+                    //calculate stats for team 2. save to a MatchOverviewModel which holds team level information
                     team2Overview.teamID = teamCheck(team2);
                     team2Overview.matchID = match.Metadata.MatchId;
                     team2Overview.totalKills = calculateTotalTeamKills(team2);
@@ -71,22 +72,15 @@ namespace LeagueStats
                     team2Overview.winGame = winCheck(team2);
                     team2Overview.myTeam = summonerCheck(team2, summonerPuuidList);
 
+                    //adds both MatchOverviewModel to a masterList
                     masterGameList.AddMany(team1Overview, team2Overview);
                 }
             }
 
-            
-
+            //logic Todo
             foreach (var gamePlayed in masterGameList)
             {
-                if (gamePlayed.myTeam == true)
-                {
-                    myTeamList.Add(gamePlayed);
-                }
-                else
-                {
-                    opponentTeamList.Add(gamePlayed);
-                }
+
             }
 
             foreach(var game in myTeamList)
