@@ -28,17 +28,19 @@ namespace LeagueStats
 
         public static List<MatchOverviewModel> calculateOverviewStats(List<MatchDataModel> matchdata, List<string> summonerPuuidList)
         {
-            List<MatchOverviewModel> masterGameList = new List<MatchOverviewModel>();
+            
+            IDictionary<string, List<MatchOverviewModel>> matchOverviewDictionary = new Dictionary<string, List<MatchOverviewModel>>();
 
             foreach (var match in matchdata)
             {
+                List<MatchOverviewModel> masterGameList = new List<MatchOverviewModel>();
                 List<Participant> team1 = new List<Participant>();
                 List<Participant> team2 = new List<Participant>();
                 MatchOverviewModel team1Overview = new MatchOverviewModel();
                 MatchOverviewModel team2Overview = new MatchOverviewModel();
 
                 if (match.Metadata != null)
-                {
+                 {
                     //var gameDuration = TimeConversion.SecondsToMinutes(match.Info.GameDuration);
                     //Console.WriteLine("gameDuration: " + gameDuration);
 
@@ -48,45 +50,58 @@ namespace LeagueStats
                         sortTeams(participant, team1, team2);
                     }
 
-                    //calculate stats for team 1. save to a MatchOverviewModel which holds team level information
-                    team1Overview.teamID = teamCheck(team1);
-                    team1Overview.matchID = match.Metadata.MatchId;
-                    team1Overview.totalKills = calculateTotalTeamKills(team1);
-                    team1Overview.totalAssists = calculateTotalTeamAssists(team1);
-                    team1Overview.totalDeaths = calculateTotalTeamDeaths(team1);
-                    team1Overview.totalHealing = calculateTotalTeamHealing(team1);
-                    team1Overview.totalGoldEarned = calculateTotalTeamGold(team1);
-                    team1Overview.totalGoldSpent = calculateTotalTeamGoldSpent(team1);
-                    team1Overview.winGame = winCheck(team1);
-                    team1Overview.myTeam = summonerCheck(team1, summonerPuuidList);
+                    calculateTeamStats(match, team1Overview, team2Overview, team1, team2, summonerPuuidList, masterGameList, matchOverviewDictionary);
+                    calculatePlayerStatsForMatch(team1, team2);
 
-                    //calculate stats for team 2. save to a MatchOverviewModel which holds team level information
-                    team2Overview.teamID = teamCheck(team2);
-                    team2Overview.matchID = match.Metadata.MatchId;
-                    team2Overview.totalKills = calculateTotalTeamKills(team2);
-                    team2Overview.totalAssists = calculateTotalTeamAssists(team2);
-                    team2Overview.totalDeaths = calculateTotalTeamDeaths(team2);
-                    team2Overview.totalHealing = calculateTotalTeamHealing(team2);
-                    team2Overview.totalGoldEarned = calculateTotalTeamGold(team2);
-                    team2Overview.totalGoldSpent = calculateTotalTeamGoldSpent(team2);
-                    team2Overview.winGame = winCheck(team2);
-                    team2Overview.myTeam = summonerCheck(team2, summonerPuuidList);
-
-                    //adds both MatchOverviewModel to a masterList
-                    masterGameList.AddMany(team1Overview, team2Overview);
+                    matchOverviewDictionary.Add(match.Metadata.MatchId, masterGameList);   
                 }
             }
 
-            //logic Todo
-            foreach (var gamePlayed in masterGameList)
+            foreach(var matchOverview in matchOverviewDictionary)
             {
-
+                foreach(var value in matchOverview.Value)
+                {
+                    
+                }
             }
 
             return null;
         }
 
-        
+        public static void calculateTeamStats(MatchDataModel match, MatchOverviewModel team1Overview, MatchOverviewModel team2Overview, List<Participant> team1, List<Participant> team2, List<string>summonerPuuidList, List<MatchOverviewModel>masterGameList, IDictionary<string, List<MatchOverviewModel>> matchOverviewDictionary)
+        {
+            //calculate stats for team 1. save to a MatchOverviewModel which holds team level information
+            team1Overview.teamID = teamCheck(team1);
+            team1Overview.matchID = match.Metadata.MatchId;
+            team1Overview.totalKills = calculateTotalTeamKills(team1);
+            team1Overview.totalAssists = calculateTotalTeamAssists(team1);
+            team1Overview.totalDeaths = calculateTotalTeamDeaths(team1);
+            team1Overview.totalHealing = calculateTotalTeamHealing(team1);
+            team1Overview.totalGoldEarned = calculateTotalTeamGold(team1);
+            team1Overview.totalGoldSpent = calculateTotalTeamGoldSpent(team1);
+            team1Overview.winGame = winCheck(team1);
+            team1Overview.myTeam = summonerCheck(team1, summonerPuuidList);
+
+            //calculate stats for team 2. save to a MatchOverviewModel which holds team level information
+            team2Overview.teamID = teamCheck(team2);
+            team2Overview.matchID = match.Metadata.MatchId;
+            team2Overview.totalKills = calculateTotalTeamKills(team2);
+            team2Overview.totalAssists = calculateTotalTeamAssists(team2);
+            team2Overview.totalDeaths = calculateTotalTeamDeaths(team2);
+            team2Overview.totalHealing = calculateTotalTeamHealing(team2);
+            team2Overview.totalGoldEarned = calculateTotalTeamGold(team2);
+            team2Overview.totalGoldSpent = calculateTotalTeamGoldSpent(team2);
+            team2Overview.winGame = winCheck(team2);
+            team2Overview.myTeam = summonerCheck(team2, summonerPuuidList);
+
+            //adds both MatchOverviewModel to a masterList
+            masterGameList.AddMany(team1Overview, team2Overview);
+        }
+
+        public static void calculatePlayerStatsForMatch(List<Participant> team1, List<Participant> team2)
+        {
+
+        }
 
         public static bool summonerCheck(List<Participant> team, List<string> summonerPuuidList)
         {
