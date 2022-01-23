@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace LeagueStats
 {
 
-    class Calculations
+    public class Calculations
     {
         public static int winsInLast10Games(List<MatchDataModel> matchdata, List<string> summonerPuuidList)
         {
@@ -24,6 +24,25 @@ namespace LeagueStats
                 }
             }
             return winCount;
+            //Console.WriteLine("Games won in last 10 games: {0}\n", winCount);
+        }
+
+        public static void last10Games(List<MatchDataModel> matchdata, List<string> summonerPuuidList)
+        {
+            Console.WriteLine("** LAST 10 GAMES PLAYED **\n");
+            foreach (var match in matchdata)
+            {
+                if (match.Metadata != null)
+                {
+                    foreach (var participant in match.Info.Participants)
+                    {
+                        if (participant.Puuid == summonerPuuidList[0])
+                        {
+                            Console.WriteLine("Champion: {0}\nKills: {1}\nDeaths: {2}\n", participant.ChampionName, participant.Kills, participant.Deaths);
+                        }
+                    }
+                }
+            }
         }
 
         public static List<MatchOverviewModel> calculateOverviewStats(List<MatchDataModel> matchdata, List<string> summonerPuuidList)

@@ -17,7 +17,7 @@ namespace LeagueStats
 
     class Program
     {
-
+        
         public static void SaveData(string filePath, List<string> summoners, List<string> summonersPuuid, List<MatchDataModel> matches )
         {
             Jobs.saveSummonerData<List<string>>(filePath, summoners, false);
@@ -116,7 +116,8 @@ namespace LeagueStats
                 }
             }
 
-            Console.WriteLine("Wins in last 10 games: " + Calculations.winsInLast10Games(matchDataList, summonerPuuidList));
+            Calculations.winsInLast10Games(matchDataList, summonerPuuidList);
+            Calculations.last10Games(matchDataList, summonerPuuidList);
 
             Calculations.calculateOverviewStats(matchDataList, summonerPuuidList);
 
