@@ -28,11 +28,9 @@ namespace LeagueStats.Tests
         {
             List<string> summonerPuuidList = new List<string>();
             summonerPuuidList.Add("Pw5naI2DkgV1tlwsH0rypFrEYw78fLXIZMHXc9JVri4cQid7_VDCNKZfXEtrsFAcWnfMg8Bt1e4O1w");
-             var test = Calculations.winsInLast10Games(matchData, summonerPuuidList);
 
+            var test = Calculations.winsInLast10Games(matchData, summonerPuuidList);
             Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(expectedValue, test);
-
         }
-
     }
 }

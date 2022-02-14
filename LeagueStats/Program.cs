@@ -52,75 +52,137 @@ namespace LeagueStats
 
             //check whether saved data exists. Returns Null is data file is empty
             var getSaveData = LoadData(summonerPuuidList, summonerList, matchDataList, filePath);
+            var continueProgram = false;
+            var loadNewData = false;
+            var loadSave = "";
 
-            //If saved data methods are not null and user wants to reload, then reload
-            var input = "";
-            if (getSaveData.matchesSave != null && getSaveData.summonerPuuidSave != null && getSaveData.summonerSave != null)
+            do
             {
-                Console.WriteLine("Would you like to Load the previous summoner data? \nPress Y to load data");
-                input = Console.ReadLine();
-
-                if(input.ToLower() == "y")
+                //If saved data methods are not null and user wants to reload, then reload
+                
+                if (getSaveData.matchesSave != null && getSaveData.summonerPuuidSave != null && getSaveData.summonerSave != null && !loadNewData)
                 {
-                    matchDataList = getSaveData.matchesSave;
-                    summonerList = getSaveData.summonerSave;
-                    summonerPuuidList = getSaveData.summonerPuuidSave;
+                    if(string.IsNullOrEmpty(loadSave))
+                    {
+                        Console.WriteLine("Would you like to Load the previous summoner data? \nPress Y to load data");
+                        loadSave = Console.ReadLine();
+                    }
+                    
+                    if (loadSave.ToLower() == "y")
+                    {
+                        matchDataList = getSaveData.matchesSave;
+                        summonerList = getSaveData.summonerSave;
+                        summonerPuuidList = getSaveData.summonerPuuidSave;
+                    }
+
                 }
 
-            }
+                if (getSaveData.matchesSave is null || loadSave.ToLower() != "y")
+                {
+                    do
+                    {
+                        //Console.WriteLine("\nEnter Summoner name");
+                        //var summonerName = Console.ReadLine();
 
-            if (getSaveData.matchesSave is null || input.ToLower() != "y")
-            {
+                        summonerList.AddMany("The Master Chief");
+
+                        //if (!string.IsNullOrEmpty(summonerName))
+                        if (summonerList.Count > 0)
+                        {
+                            //summonerList.AddMany(summonerName);
+                            var response = SummonerController.getSummonerPuuid(summonerList, apiToken, client);
+
+                            if (!string.IsNullOrEmpty(response.puuid))
+                            {
+                                summonerPuuidList.Add(response.puuid);
+
+                                Console.WriteLine("\nAccount Puuid : " + response.puuid + "\n");
+                                userSpecified = true;
+                            }
+                            else { summonerList.Clear(); }
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nYou Must input a value for UserName!");
+                        }
+                    } while (!userSpecified);
+
+
+                    if (summonerPuuidList.Count > 0)
+                    {
+                        MatchController.getSummonerMatches(summonerPuuidList, apiToken, client, matchIdList, matchIdDictionary);
+                    }
+
+                    if (matchIdDictionary.Count > 0)
+                    {
+                        MatchController.getMatchData(matchIdDictionary, apiToken, clientRegion, matchDataList);
+                    }
+                    //only save to file if there is actual data to save
+                    if (summonerList.Count > 0 && summonerPuuidList.Count > 0 && matchDataList.Count > 0)
+                    {
+                        SaveData(filePath, summonerList, summonerPuuidList, matchDataList);
+                    }
+                }
+
+                var doCalculations = false;
                 do
                 {
-                    //Console.WriteLine("\nEnter Summoner name");
-                    //var summonerName = Console.ReadLine();
+                    Console.WriteLine("\nPlease select (1,2,3) which data you want to retrieve, or press X to exit\n");
+                    Console.WriteLine("1. Wins in Last 10 Games\n2. Last 10 games results\n3. Match Overview for last 10 games\n");
+                    var calculationSelected = Console.ReadLine();
 
-                    summonerList.AddMany("ChardeeMacDennis");
-
-                    //if (!string.IsNullOrEmpty(summonerName))
-                    if(summonerList.Count > 0)
+                    switch(calculationSelected)
                     {
-                        //summonerList.AddMany(summonerName);
-                        var response = SummonerController.getSummonerPuuid(summonerList, apiToken, client);
-
-                        if (!string.IsNullOrEmpty(response.puuid))
-                        {
-                            summonerPuuidList.Add(response.puuid);
-                            
-                            Console.WriteLine("\nAccount Puuid : " + response.puuid + "\n");
-                            userSpecified = true;
-                        }
-                        else { summonerList.Clear(); }
+                        case "1":
+                            var winsIn10 = Calculations.winsInLast10Games(matchDataList, summonerPuuidList);
+                            Console.WriteLine("Games won in last 10 games: {0}\n", winsIn10);
+                            break;
+                        case "2":
+                            Calculations.last10Games(matchDataList, summonerPuuidList);
+                            break;
+                        case "3":
+                            Calculations.calculateOverviewStats(matchDataList, summonerPuuidList);
+                            break;
+                        case "x":
+                            doCalculations = true;
+                            break;
+                        default:
+                            Console.WriteLine("Invalid Selection");
+                            break;
                     }
-                    else
-                    {
-                        Console.WriteLine("\nYou Must input a value for UserName!");
-                    }
-                } while (!userSpecified);
+
+                } while (!doCalculations);
+                
 
 
-                if (summonerPuuidList.Count > 0)
+                Console.WriteLine("\nPress 'R' to return to options. Press 'B' to load new data (calls endpoints to get latest info). Press any other button to confirm exit.");
+                var reloadInput = Console.ReadLine().ToUpper();
+
+                switch (reloadInput)
                 {
-                    MatchController.getSummonerMatches(summonerPuuidList, apiToken, client, matchIdList, matchIdDictionary);
+                    case "R":
+                        continueProgram = true;
+                        loadSave = "y";
+                        break;
+                    case "B":
+                        loadNewData = true;
+                        continueProgram = true;
+
+                        loadSave = "";
+
+                        summonerList.Clear();
+                        summonerPuuidList.Clear();
+                        matchIdList.Clear();
+                        matchDataList.Clear();
+                        matchIdDictionary.Clear();
+                        break;
+                    default:
+                        continueProgram = false;
+                        break;
                 }
 
-                if (matchIdDictionary.Count > 0)
-                {
-                    MatchController.getMatchData(matchIdDictionary, apiToken, clientRegion, matchDataList);
-                }
-                //only save to file if there is actual data to save
-                if (summonerList.Count > 0 && summonerPuuidList.Count > 0 && matchDataList.Count > 0)
-                {
-                    SaveData(filePath, summonerList, summonerPuuidList, matchDataList);
-                }
-            }
-
-            Calculations.winsInLast10Games(matchDataList, summonerPuuidList);
-            Calculations.last10Games(matchDataList, summonerPuuidList);
-
-            Calculations.calculateOverviewStats(matchDataList, summonerPuuidList);
-
+            } while (continueProgram); 
+           
             Console.ReadKey();
         }
     }

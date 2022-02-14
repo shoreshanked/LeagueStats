@@ -24,7 +24,6 @@ namespace LeagueStats
                 }
             }
             return winCount;
-            //Console.WriteLine("Games won in last 10 games: {0}\n", winCount);
         }
 
         public static void last10Games(List<MatchDataModel> matchdata, List<string> summonerPuuidList)
